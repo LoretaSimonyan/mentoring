@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Demo Suite" parallel="true" >
+    <test name="Sum Calculator Test" >
+        <classes>
+            <class name="SumCalculatorTest"/>
+        </classes>
+    </test>
+    <test name="Sub Calculator Test" >
+        <classes>
+            <class name="SubCalculatorTest"/>
+        </classes>
+    </test>
+</suite>
