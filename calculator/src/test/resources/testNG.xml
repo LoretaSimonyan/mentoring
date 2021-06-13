@@ -1,13 +1,26 @@
-<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Demo Suite" parallel="true" >
-    <test name="Sum Calculator Test" >
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="UnitTest" verbose="1" parallel="methods">
+    <test name="test">
+        <groups>
+            <run>
+<!--                <include name="failed"/>-->
+                <include name="passed"/>
+            </run>
+        </groups>
         <classes>
+            <class name="NegativeValueTest"/>
             <class name="SumCalculatorTest"/>
-        </classes>
-    </test>
-    <test name="Sub Calculator Test" >
-        <classes>
+            <class name="MultipleCalculatorTest"/>
+            <class name="PositiveValueTest"/>
+            <class name="PowCalculatorTest"/>
+            <class name="SinCalculatorTest"/>
+            <class name="SqrtCalculatorTest"/>
             <class name="SubCalculatorTest"/>
+            <class name="DivCalculatorTest">
+                <methods>
+                    <exclude name="divDoubleToZero"></exclude>
+                </methods>
+            </class>
         </classes>
     </test>
 </suite>

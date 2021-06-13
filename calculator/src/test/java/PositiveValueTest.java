@@ -4,7 +4,7 @@ import org.testng.annotations.Test;
 
 public class PositiveValueTest extends BaseTest {
 
-    @Test(dataProvider = "valuesForPositiveNumberTest")
+    @Test(dataProvider = "valuesForPositiveNumberTest", groups = "passed")
     public void isNumberPositive(long a, boolean expectedValue) {
         boolean result = calculator.isPositive(a);
         Assert.assertEquals(result, expectedValue);

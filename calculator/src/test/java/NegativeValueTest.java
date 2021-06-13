@@ -7,14 +7,14 @@ import org.testng.annotations.Test;
 
 public class NegativeValueTest extends BaseTest{
 
-    @Test(dataProvider = "valuesForNegativeNumberTest")
+    @Test(dataProvider = "valuesForNegativeNumberTest", groups = "passed")
     public void isNumberNegative(long number, boolean expectedResult) {
         boolean actualResult = calculator.isNegative(number);
         Assert.assertEquals(actualResult, expectedResult);
     }
 
     @DataProvider(name = "valuesForNegativeNumberTest")
-    public Object[][] valuesForSum() {
+    public Object[][] valuesForNe() {
         return new Object[][]{
                 {10, false},
                 {10, false},

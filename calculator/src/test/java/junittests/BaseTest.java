@@ -1,17 +1,20 @@
+package junittests;
+
 import com.epam.tat.module4.Calculator;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 public class BaseTest {
     Calculator calculator;
 
-    @BeforeClass(alwaysRun = true)
+    @BeforeEach
     public void setUp() {
         calculator = new Calculator();
     }
 
-    @AfterClass(alwaysRun = true)
+    @AfterEach
     public void tearDown() {
         calculator = null;
     }
+
 }

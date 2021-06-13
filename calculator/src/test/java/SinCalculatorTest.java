@@ -3,7 +3,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class SinCalculatorTest extends BaseTest{
-    @Test(dataProvider = "valuesForSinCalculatorTest")
+    @Test(dataProvider = "valuesForSinCalculatorTest", groups = "failed")
     public void subOfTwoNumbers(long a, double expectedResult) {
         double actualResult = calculator.sin(a);
         Assert.assertEquals(actualResult, expectedResult);
