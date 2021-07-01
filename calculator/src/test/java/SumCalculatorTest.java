@@ -20,7 +20,7 @@ public class SumCalculatorTest extends BaseTest {
     public Object[][] valuesForSumDouble() {
         return new Object[][]{
                 {10.9, 0.3, 11.2},
-                {-10.5, -1, 11.5},
+                {-10.5, -1, -11.5},
                 {-12.9, 10.3, -2.6}
         };
 

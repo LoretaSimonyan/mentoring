@@ -8,9 +8,7 @@ import org.openqa.selenium.support.PageFactory;
 import utils.PropertiesReader;
 import utils.Waits;
 
-public class MailCreatingPage {
-    WebDriver driver;
-    Waits waits;
+public class MailCreatingPage extends BasePage{
     PropertiesReader userProperties;
 
     private final String sendToLocator = "to";
@@ -41,8 +39,7 @@ public class MailCreatingPage {
     private WebElement mailSubjectText;
 
     public MailCreatingPage(WebDriver driver, Waits waits) {
-        this.waits = waits;
-        this.driver = driver;
+        super(driver, waits);
         PageFactory.initElements(driver, this);
     }
 
@@ -58,17 +55,24 @@ public class MailCreatingPage {
         mailBodyFiled.sendKeys(bodyText);
     }
 
+    public void sendEmailToYourself(String subjectText, String bodyText){
+        waits.waitElementToBeClickableByLocator(By.xpath(sendButtonLocator));
+        userProperties = new PropertiesReader();
+        sendToFiled.sendKeys(userProperties.getUserEmail()+"@gmail.com");
+        subjectFiled.sendKeys(subjectText);
+        mailBodyFiled.sendKeys(bodyText);
+    }
+
     public String getTextFromMailBody() {
-        waits.waitElementVisibility(By.xpath(mailBodyLocator));
-        return mailBodyFiled.getText();
+        return waitAndGetText(mailBodyFiled);
     }
 
     public String getTextFromSendToFiled() {
-        waits.waitElementVisibility(By.xpath(sendToTextLocator));
-        return sendToText.getText();
+        return waitAndGetText(sendToText);
     }
 
     public String getTextFromSubjectFiled() {
+        waits.waitElementVisibility(By.xpath(mailSubjectTextLocator));
         return mailSubjectText.getText();
     }
 

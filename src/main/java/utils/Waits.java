@@ -22,7 +22,17 @@ public class Waits {
     }
 
     public void waitElementVisibility(By by){
-        WebDriverWait wait = new WebDriverWait(driver, 10);
+        WebDriverWait wait = new WebDriverWait(driver, 30);
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+    }
+
+    public void waitElementToBeClickableByWebElement(WebElement element){
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        wait.until(ExpectedConditions.elementToBeClickable(element));
+    }
+
+    public void waitElementVisibility(WebElement element){
+        WebDriverWait wait = new WebDriverWait(driver,30);
+        wait.until(ExpectedConditions.visibilityOf(element));
     }
 }

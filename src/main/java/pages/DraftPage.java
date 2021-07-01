@@ -9,9 +9,7 @@ import utils.Waits;
 
 import java.util.List;
 
-public class DraftPage {
-    WebDriver driver;
-    Waits waits;
+public class DraftPage extends BasePage {
 
     private final String allMailsDraftsLocator = "//span[text() = 'Draft']//ancestor::tr[@role = 'row']";
     @FindBy(xpath = allMailsDraftsLocator)
@@ -22,8 +20,7 @@ public class DraftPage {
     private List<WebElement> allMailsSubject;
 
     public  DraftPage(WebDriver driver, Waits wait){
-        this.waits = wait;
-        this.driver = driver;
+        super(driver,wait);
         PageFactory.initElements(driver,this);
     }
 
@@ -32,8 +29,5 @@ public class DraftPage {
           allMailsInDrafts.get(0).click();
     }
 
-    public String getLastMailSubject(){
-        waits.waitElementVisibility(By.xpath(allMailsDraftsLocator));
-        return allMailsSubject.get(1).getText();
-    }
+
 }

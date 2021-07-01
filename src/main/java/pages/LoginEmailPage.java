@@ -8,10 +8,10 @@ import org.openqa.selenium.support.PageFactory;
 import utils.PropertiesReader;
 import utils.Waits;
 
-public class LoginEmailPage {
-    private final WebDriver driver;
-    private  Waits waits;
+public class LoginEmailPage extends BasePage{
+
     private final String nextButtonLocator = "//div[@id='identifierNext']";
+   LoginPasswordPage loginPasswordPage = new LoginPasswordPage(driver,waits);
 
     @FindBy(xpath = "//input[@id='identifierId']")
     private WebElement emailFiled;
@@ -22,14 +22,13 @@ public class LoginEmailPage {
     PropertiesReader userProperties = new PropertiesReader();
 
     public LoginEmailPage(WebDriver driver, Waits waits) {
-        this.driver = driver;
-        this.waits = waits;
+        super(driver,waits);
         PageFactory.initElements(driver, this);
     }
 
-    public void enterEmail(){
-        waits.waitElementToBeClickableByLocator(By.xpath(nextButtonLocator));
-        emailFiled.sendKeys(userProperties.getUserEmail());
+    public LoginPasswordPage enterEmail(){
+        waitAndSendKeys(emailFiled, userProperties.getUserEmail());
         nextButton.click();
+        return new LoginPasswordPage(driver,waits);
     }
 }
