@@ -1,9 +1,10 @@
 package pages;
 
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import utils.Waits;
 
 import java.util.List;
 
@@ -16,23 +17,23 @@ public class SentPage extends BasePage {
     @FindBy(xpath = "//td[@class = 'TC']")
     private WebElement noMailMessage;
 
+    JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
 
-    public SentPage(WebDriver driver, Waits waits) {
-        super(driver, waits);
-        PageFactory.initElements(driver, this);
-    }
 
     public int getSentMailsCount() {
-       try {
-           waits.waitElementVisibility(By.xpath(allSentMailsLocator));
-       }
-       catch (TimeoutException exception){
-           return 0;
-       }
+        try {
+            waits.waitElementVisibility(By.xpath(allSentMailsLocator));
+        } catch (TimeoutException exception) {
+            return 0;
+        }
         return allSentMails.size();
     }
 
-    public String getNoMailMassageText(){
+    public String getNoMailMassageText() {
         return waitAndGetText(noMailMessage);
+    }
+
+    public String getSentMailPageTitle() {
+        return javascriptExecutor.executeScript("return document.title;").toString();
     }
 }

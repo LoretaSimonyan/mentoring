@@ -1,15 +1,12 @@
 package pages;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import utils.Waits;
 
 import java.util.List;
 
-public class InboxPage extends BasePage{
+public class InboxPage extends BasePage {
     private final String allMailsInInboxLocator = "//div[@role = 'main' ]//tr[@role = 'row']";
     @FindBy(xpath = allMailsInInboxLocator)
     private List<WebElement> allMailsInInbox;
@@ -17,19 +14,14 @@ public class InboxPage extends BasePage{
     @FindBy(xpath = "//tr[@class = 'zA zE' and @role = 'row']//div[@class = 'afn']")
     private WebElement mailTextLocator;
 
-    public InboxPage(WebDriver driver, Waits waits) {
-        super(driver, waits);
-        PageFactory.initElements(driver,this);
-    }
-
-    public int quantityOfMailsInInbox(){
+    public int quantityOfMailsInInbox() {
         waits.waitElementVisibility(By.xpath(allMailsInInboxLocator));
         return allMailsInInbox.size();
     }
 
-    public  OpenedMailPage openLastMailFromInbox(){
+    public OpenedMailPage openLastMailFromInbox() {
         waits.waitElementToBeClickableByLocator(By.xpath(allMailsInInboxLocator));
         allMailsInInbox.get(0).click();
-        return new OpenedMailPage(driver,waits);
+        return new OpenedMailPage();
     }
 }

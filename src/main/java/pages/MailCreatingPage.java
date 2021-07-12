@@ -1,14 +1,14 @@
 package pages;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 import utils.PropertiesReader;
-import utils.Waits;
 
-public class MailCreatingPage extends BasePage{
+import java.util.NoSuchElementException;
+
+public class MailCreatingPage extends BasePage {
     PropertiesReader userProperties;
 
     private final String sendToLocator = "to";
@@ -34,14 +34,16 @@ public class MailCreatingPage extends BasePage{
     @FindBy(xpath = sendToTextLocator)
     private WebElement sendToText;
 
-    private final String mailSubjectTextLocator= "//div[@class = 'aYF']//span";
+    private final String mailSubjectTextLocator = "//div[@class = 'aYF']//span";
     @FindBy(xpath = mailSubjectTextLocator)
     private WebElement mailSubjectText;
 
-    public MailCreatingPage(WebDriver driver, Waits waits) {
-        super(driver, waits);
-        PageFactory.initElements(driver, this);
-    }
+    @FindBy(xpath = "//div[@class = 'oh J-Z-I J-J5-Ji T-I-ax7 oi'] ")
+    private WebElement deleteButtonText;
+
+    @FindBy(xpath = "//div[@class = 'oh J-Z-I J-J5-Ji T-I-ax7']")
+    private WebElement deleteButton;
+    Actions action;
 
     public void clickOnSetSaveAndCloseButton() {
         saveAndCloseButton.click();
@@ -55,10 +57,10 @@ public class MailCreatingPage extends BasePage{
         mailBodyFiled.sendKeys(bodyText);
     }
 
-    public void sendEmailToYourself(String subjectText, String bodyText){
+    public void sendEmailToYourself(String subjectText, String bodyText) {
         waits.waitElementToBeClickableByLocator(By.xpath(sendButtonLocator));
         userProperties = new PropertiesReader();
-        sendToFiled.sendKeys(userProperties.getUserEmail()+"@gmail.com");
+        sendToFiled.sendKeys(userProperties.getUserEmail());
         subjectFiled.sendKeys(subjectText);
         mailBodyFiled.sendKeys(bodyText);
     }
@@ -84,5 +86,23 @@ public class MailCreatingPage extends BasePage{
     public void sendMail() {
         waits.waitElementToBeClickableByLocator(By.xpath(sendButtonLocator));
         sendButton.click();
+    }
+
+    public boolean isDeleteButtonTextDisplayed() {
+        try {
+            deleteButtonText.isDisplayed();
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public String getDeleteButtonText() {
+        return waitAndGetText(deleteButtonText);
+    }
+
+    public void moveToDeleteButton() {
+        action = new Actions(driver);
+        action.moveToElement(deleteButton).perform();
     }
 }

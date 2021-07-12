@@ -1,32 +1,31 @@
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
 import pages.*;
+import utils.DriverFactory;
 import utils.PropertiesReader;
 import utils.RandomData;
-import utils.Waits;
+
+import java.net.MalformedURLException;
 
 public class GmailTest {
-    WebDriver driver;
-    Waits waits;
+    WebDriver driver ;
     SoftAssert softAssert;
     GmailMainPage gmailMainPage;
     PropertiesReader propertiesReader = new PropertiesReader();
     private final String mailSubjectText = RandomData.randomStringGenerator(10);
     private final String mailBodyText = RandomData.randomStringGenerator(20);
+    private final String statusText = RandomData.randomStringGenerator(10);
+
     private final String mailSenderName = "User Useryan";
     int sentMailsBeforeSendinNewMail;
 
     @BeforeMethod()
     public void login() {
-        System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
+        driver = DriverFactory.getDriver();
         driver.get("https://mail.google.com/");
-        waits = new Waits(driver);
-        LoginEmailPage loginEmailPage = new LoginEmailPage(driver, waits);
+        LoginEmailPage loginEmailPage = new LoginEmailPage();
         LoginPasswordPage loginPasswordPage = loginEmailPage.enterEmail();
         gmailMainPage = loginPasswordPage.enterPassword();
         Assert.assertTrue(gmailMainPage.isInGmailPage(), "It's not Gmail main page");
@@ -36,6 +35,7 @@ public class GmailTest {
     public void sentEmailTest() {
         SentPage sentPage = gmailMainPage.openSentMails();
         sentMailsBeforeSendinNewMail = sentPage.getSentMailsCount();
+        DraftPage draftPage = gmailMainPage.openDraftsPage();
         int draftsQuantityBeforeCreatingNewMail = gmailMainPage.getDraftsQuantity();
         MailCreatingPage mailCreatingPage = gmailMainPage.clickOnComposeButton();
         mailCreatingPage.createNewMail(mailSubjectText, mailBodyText);
@@ -43,7 +43,7 @@ public class GmailTest {
         int draftsQuantityAfterCreatingNewMail = gmailMainPage.getDraftsQuantity();
         Assert.assertEquals(draftsQuantityAfterCreatingNewMail - 1, draftsQuantityBeforeCreatingNewMail, "The message isn't saved in drafts");
 
-        DraftPage draftPage = gmailMainPage.openDraftsPage();
+        Assert.assertEquals(draftPage.getDraftPageTitle(),String.format("Drafts (%d) - %s - Gmail",draftsQuantityAfterCreatingNewMail,propertiesReader.getUserEmail(), "Drafts page title is nor right"));
         draftPage.openLastMailFromDrafts();
         softAssert = new SoftAssert();
         softAssert.assertEquals(mailBodyText, mailCreatingPage.getTextFromMailBody(), "Actual body are different from Expected");
@@ -55,6 +55,7 @@ public class GmailTest {
         int draftsQuantityAfterSendingMail = gmailMainPage.getDraftsQuantity();
         Assert.assertEquals(draftsQuantityAfterSendingMail, draftsQuantityAfterCreatingNewMail - 1, "After sending mail, mail isn't disappeared from drafts");
         gmailMainPage.openSentMails();
+        Assert.assertEquals(sentPage.getSentMailPageTitle(),String.format("Sent Mail - %s - Gmail",propertiesReader.getUserEmail()));
         int sentMailsAfterSendingNewMail = sentPage.getSentMailsCount();
         Assert.assertEquals(sentMailsBeforeSendinNewMail + 1, sentMailsAfterSendingNewMail, "Sent mail isn't in Sent folder");
     }
@@ -94,9 +95,33 @@ public class GmailTest {
         softAssert.assertAll();
     }
 
+    @Test()
+    public void shareStatusTest(){
+        HangoutsPage hangoutsPage = gmailMainPage.switchToHangoutsFrame();
+        hangoutsPage.shareYourStatus(statusText);
+        Assert.assertEquals(gmailMainPage.getSharedStatus(),statusText, "Status isn't set");
+    }
+
+    @Test
+    public void signOutFromHangoutsTest(){
+        HangoutsPage hangoutsPage = gmailMainPage.switchToHangoutsFrame();
+        hangoutsPage.signOutOfHangouts();
+        Assert.assertTrue(gmailMainPage.checkAvailabilityOfSignInToHangouts());
+        gmailMainPage.signInHangouts();
+    }
+
+    @Test
+    public void deleteButtonTextInCreatingMailPageTest(){
+        MailCreatingPage mailCreatingPage = gmailMainPage.clickOnComposeButton();
+        mailCreatingPage.moveToDeleteButton();
+        softAssert = new SoftAssert();
+        softAssert.assertTrue(mailCreatingPage.isDeleteButtonTextDisplayed(),"The text isn't displayed");
+        softAssert.assertEquals(mailCreatingPage.getDeleteButtonText(),"Discard draft(Ctrl-Shift-D)");
+    }
+
     @AfterMethod
-    public void tearDown() {
+    public void signOut() {
         gmailMainPage.signOut();
-        driver.quit();
+        DriverFactory.quit();
     }
 }

@@ -1,11 +1,9 @@
 package pages;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import utils.Waits;
 
 import java.util.List;
 
@@ -18,13 +16,15 @@ public class GmailMainPage extends BasePage {
     @FindBy(xpath = "//div[text() = 'Compose']")
     private WebElement composeButton;
 
-    @FindBy(xpath = "//div[@data-tooltip = 'Sent']")
+    private final String sentButtonLocator = "//div[@data-tooltip = 'Sent']";
+    @FindBy(xpath = sentButtonLocator)
     private WebElement sentButton;
 
     private final String draftsButtonLocator = "//div[@data-tooltip = 'Drafts']";
     @FindBy(xpath = draftsButtonLocator)
     private WebElement draftsButton;
 
+    private final String inboxButtonLocator = "//a[text() = 'Inbox']";
     @FindBy(xpath = "//a[text() = 'Inbox']")
     private WebElement inboxButton;
 
@@ -32,7 +32,7 @@ public class GmailMainPage extends BasePage {
     @FindBy(xpath = draftsQuantityLocator)
     private WebElement draftsQuantity;
 
-    @FindBy(xpath ="//a[@class = 'gb_C gb_Ma gb_h']" )
+    @FindBy(xpath = "//a[@class = 'gb_C gb_Ma gb_h']")
     private WebElement userButton;
 
     private final String signOutButtonLocator = "//a[text() = 'Sign out']";
@@ -52,24 +52,40 @@ public class GmailMainPage extends BasePage {
     @FindBy(xpath = "//div[@gh = 'tm']//div[@data-tooltip = 'Delete' ]")
     private WebElement deleteButton;
 
-    public GmailMainPage(WebDriver driver, Waits waits) {
-        super(driver,waits);
-        PageFactory.initElements(driver, this);
-    }
+    @FindBy(xpath = "//div[@aria-label = 'Main menu']")
+    private WebElement mainMenuButton;
 
-    public int getDraftsQuantity(){
+    @FindBy(xpath = "//div[@class = 'qR DGj28e']")
+    private WebElement hangoutsUserLocator;
+
+    @FindBy(xpath = "//iframe[@class = 'a1j']")
+    private WebElement hangoutsIframe;
+
+    @FindBy(xpath = "//img[@class = 'xU zc-Sf']")
+    private WebElement hangoutsImage;
+
+    @FindBy(xpath = "//div[@class = 'pBtHLd MfmRS']")
+    private WebElement sharedStatus;
+
+    @FindBy(xpath = "//div[text() = 'Sign in']")
+    private WebElement signInToHangoutsButton;
+
+    JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
+
+
+    public int getDraftsQuantity() {
         waits.waitElementToBeClickableByLocator(By.xpath(draftsQuantityLocator));
         return Integer.parseInt(draftsQuantity.getText());
     }
 
     public MailCreatingPage clickOnComposeButton() {
         composeButton.click();
-        return  new MailCreatingPage(driver,waits);
+        return new MailCreatingPage();
     }
 
-    public DraftPage openDraftsPage(){
+    public DraftPage openDraftsPage() {
         waitAndClick(draftsButton);
-        return  new DraftPage(driver,waits);
+        return new DraftPage();
     }
 
     public boolean isInGmailPage() {
@@ -77,23 +93,19 @@ public class GmailMainPage extends BasePage {
         return gmailPageIdentifier.isDisplayed();
     }
 
-    public SentPage openSentMails(){
-        waitAndClick(sentButton);
-        return  new SentPage(driver,waits);
+    public SentPage openSentMails() {
+        javascriptExecutor.executeScript("arguments[0].click();", sentButton);
+        return new SentPage();
     }
 
-    public void signOut(){ ;
+    public void signOut() {
         waitAndClick(userButton);
         waitAndClick(signOutButton);
     }
 
-    public InboxPage openInboxPage(){
-        waitAndClick(inboxButton);
-        return new InboxPage(driver,waits);
-    }
-
-    public int getInboxQuantity(){
-       return Integer.parseInt(waitAndGetText(inboxQuantity));
+    public InboxPage openInboxPage() {
+        javascriptExecutor.executeScript("arguments[0].click();", inboxButton);
+        return new InboxPage();
     }
 
     public void selectAllMails() {
@@ -103,17 +115,50 @@ public class GmailMainPage extends BasePage {
 
     public boolean isAllMailsAreSelected() {
         waits.waitElementVisibility(By.xpath(locatorForAllMailsCheckBox));
-        for (int i = 0; i < allMailsCheckBox.size(); ++i){
+        for (int i = 0; i < allMailsCheckBox.size(); ++i) {
             waits.waitElementToBeClickableByWebElement(allMailsCheckBox.get(i));
-            System.out.println(i);
-            if(!Boolean.parseBoolean(allMailsCheckBox.get(i).getAttribute("aria-checked"))) {
+            if (!Boolean.parseBoolean(allMailsCheckBox.get(i).getAttribute("aria-checked"))) {
                 return false;
             }
         }
         return true;
     }
 
-    public void clickOnDeleteButton(){
+    public void clickOnDeleteButton() {
         waitAndClick(deleteButton);
     }
+
+    public void clickOnMainMenu() {
+        mainMenuButton.click();
+    }
+
+    public HangoutsPage switchToHangoutsFrame() {
+        switchToFrame(hangoutsIframe);
+        waitAndClick(hangoutsImage);
+        driver.switchTo().defaultContent();
+        return new HangoutsPage();
+    }
+
+
+    public String getSharedStatus() {
+        switchToFrame(hangoutsIframe);
+        String hangoutsStatus = waitAndGetText(sharedStatus);
+        driver.switchTo().defaultContent();
+        return hangoutsStatus;
+    }
+
+    public boolean checkAvailabilityOfSignInToHangouts() {
+        switchToFrame(hangoutsIframe);
+        waits.waitElementVisibility(signInToHangoutsButton);
+        boolean isDisplayed = signInToHangoutsButton.isDisplayed();
+        driver.switchTo().defaultContent();
+        return isDisplayed;
+    }
+
+    public void signInHangouts() {
+        switchToFrame(hangoutsIframe);
+        signInToHangoutsButton.click();
+        driver.switchTo().defaultContent();
+    }
+
 }
