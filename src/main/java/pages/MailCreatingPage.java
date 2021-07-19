@@ -90,6 +90,7 @@ public class MailCreatingPage extends BasePage {
 
     public boolean isDeleteButtonTextDisplayed() {
         try {
+            waits.waitElementVisibility(deleteButtonText);
             deleteButtonText.isDisplayed();
         } catch (NoSuchElementException e) {
             return false;
@@ -103,6 +104,7 @@ public class MailCreatingPage extends BasePage {
 
     public void moveToDeleteButton() {
         action = new Actions(driver);
+        waits.waitElementVisibility(deleteButton);
         action.moveToElement(deleteButton).perform();
     }
 }

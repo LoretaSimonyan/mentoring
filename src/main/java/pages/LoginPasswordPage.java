@@ -1,14 +1,17 @@
 package pages;
 
+import model.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import utils.PropertiesReader;
 
 public class LoginPasswordPage extends BasePage {
 
-    PropertiesReader userProperties = new PropertiesReader();
     private final String passwordLocator = "password";
     private final String nextButtonLocator = "passwordNext";
+    Logger logger = LogManager.getRootLogger();
 
     @FindBy(id = nextButtonLocator)
     private WebElement nextButton;
@@ -16,9 +19,11 @@ public class LoginPasswordPage extends BasePage {
     @FindBy(name = passwordLocator)
     private WebElement passwordFiled;
 
-    public GmailMainPage enterPassword() {
-        waitAndSendKeys(passwordFiled, userProperties.getUserPassword());
+    public GmailMainPage enterPassword(User currentUser) {
+        waitAndSendKeys(passwordFiled, currentUser.getUserPassword());
+        logger.info("User entered password");
         nextButton.click();
+        logger.info("User navigated to Gmail page");
         return new GmailMainPage();
     }
 }

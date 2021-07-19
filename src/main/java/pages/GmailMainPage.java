@@ -94,7 +94,8 @@ public class GmailMainPage extends BasePage {
     }
 
     public SentPage openSentMails() {
-        javascriptExecutor.executeScript("arguments[0].click();", sentButton);
+       waits.waitElementVisibility(By.xpath(sentButtonLocator));
+       sentButton.click();
         return new SentPage();
     }
 

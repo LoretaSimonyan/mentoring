@@ -1,31 +1,35 @@
 package utils;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.concurrent.TimeUnit;
 
 public class DriverFactory {
     private static WebDriver driver;
+
 
     private DriverFactory() {
     }
 
     public static WebDriver getDriver() {
-        try {
-
-            if (driver == null) {
-                System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
-                driver = new RemoteWebDriver(new URL("http://10.22.221.63:4004/wd/hub"), new ChromeOptions());
-                driver.manage().window().maximize();
-                driver.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
+        if (driver == null) {
+            switch (System.getProperty("browser","chrome")) {
+                case "firefox":{
+                    WebDriverManager.firefoxdriver().setup();
+                    driver = new FirefoxDriver();
+                }
+                case "MicrosoftEdge":{
+                    WebDriverManager.edgedriver().setup();
+                    driver = new EdgeDriver();
+                }
+                default:
+                    WebDriverManager.chromedriver().setup();
+                    driver = new ChromeDriver();
             }
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+            driver.manage().window().maximize();
         }
         return driver;
     }

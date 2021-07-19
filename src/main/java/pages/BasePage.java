@@ -1,16 +1,19 @@
 package pages;
 
+import model.User;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import utils.DriverFactory;
+import utils.PropertiesReader;
 import utils.Waits;
 
 
 public abstract class BasePage {
     static Waits waits;
     static WebDriver driver;
+    PropertiesReader propertiesReader = new PropertiesReader();
 
     BasePage() {
         driver = DriverFactory.getDriver();
