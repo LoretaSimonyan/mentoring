@@ -7,10 +7,10 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class MailCreatingPage {
 
-    private SelenideElement sentToFiled = $(By.name("to"));
-    private SelenideElement subjectFiled =  $(By.name("subjectbox"));
-    private SelenideElement mailBodyFiled = $(By.xpath("//div[@aria-label = 'Message Body']"));
-    private SelenideElement sendButton = $(By.xpath("//div[text()='Send']"));
+    private final SelenideElement sentToFiled = $(By.name("to"));
+    private final SelenideElement subjectFiled =  $(By.name("subjectbox"));
+    private final SelenideElement mailBodyFiled = $(By.xpath("//div[@aria-label = 'Message Body']"));
+    private final SelenideElement sendButton = $(By.xpath("//div[text()='Send']"));
 
     public MailCreatingPage filSentToFilled(User user){
         sentToFiled.setValue(user.getUserEmail());
@@ -27,8 +27,7 @@ public class MailCreatingPage {
         return this;
     }
 
-    public MailCreatingPage clickOnSendButton(){
+    public void clickOnSendButton(){
         sendButton.click();
-        return this;
     }
 }

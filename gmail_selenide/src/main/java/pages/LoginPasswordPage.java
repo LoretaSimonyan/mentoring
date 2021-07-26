@@ -1,5 +1,6 @@
 package pages;
 
+import com.codeborne.selenide.SelenideElement;
 import model.User;
 import org.openqa.selenium.By;
 
@@ -7,12 +8,12 @@ import static com.codeborne.selenide.Selenide.$;
 
 public class LoginPasswordPage {
 
-    private String passwordFiledName = "password";
-    private String nextButtonId = "passwordNext";
+    private final SelenideElement passwordFiled= $(By.name("password"));
+    private final SelenideElement nextButton = $(By.id("passwordNext"));
 
     public GmailMainPage enterPassword(User user){
-        $(By.name(passwordFiledName)).setValue(user.getUserPassword());
-        $(By.id(nextButtonId)).click();
+        passwordFiled.setValue(user.getUserPassword());
+        nextButton.click();
         return new GmailMainPage();
     }
 

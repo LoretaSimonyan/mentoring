@@ -1,9 +1,11 @@
 package pages;
-
 import com.codeborne.selenide.ElementsCollection;
 import org.openqa.selenium.By;
 
+import java.time.Duration;
 import java.util.NoSuchElementException;
+
+import static com.codeborne.selenide.CollectionCondition.*;
 import static com.codeborne.selenide.Selenide.*;
 
 public class InboxPage {
@@ -11,11 +13,11 @@ public class InboxPage {
 
     public int mailCountsInInbox() {
         int mailCounts = 0;
-        if (allMailsInInbox.size() > 0) {
+        try {
+            allMailsInInbox.shouldBe(sizeGreaterThan(0),Duration.ofSeconds(30));
             mailCounts = allMailsInInbox.size();
         }
-        else return mailCounts;
-
+        catch (NoSuchElementException exception) { return mailCounts;}
         return mailCounts;
     }
 

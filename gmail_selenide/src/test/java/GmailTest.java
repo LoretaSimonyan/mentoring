@@ -1,15 +1,16 @@
-import com.codeborne.selenide.testng.ScreenShooter;
 import model.User;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
-import pages.*;
+import pages.GmailMainPage;
+import pages.LoginEmailPage;
+import pages.OpenedMailPage;
 import utils.PropertiesReader;
 import utils.RandomData;
 
 import static com.codeborne.selenide.Selenide.open;
+
 public class GmailTest {
     PropertiesReader propertiesReader = new PropertiesReader();
     GmailMainPage gmailMainPage;
@@ -21,7 +22,7 @@ public class GmailTest {
 
     @BeforeMethod
     public void login() {
-        currentUser = new User.UserBuilder()
+                 currentUser = new User.UserBuilder()
                 .userEmail(propertiesReader.getUserEmail())
                 .password(propertiesReader.getUserPassword())
                 .firstName(propertiesReader.getUserName())
@@ -29,7 +30,7 @@ public class GmailTest {
                 .build();
         open(propertiesReader.getBaseURL());
         LoginEmailPage loginEmailPage = new LoginEmailPage();
-        gmailMainPage = loginEmailPage
+                gmailMainPage = loginEmailPage
                 .enterEmail(currentUser)
                 .enterPassword(currentUser)
                 .isInGmailMainPage();
@@ -49,12 +50,12 @@ public class GmailTest {
                         .openInboxPage()
                         .mailCountsInInbox();
 
-        gmailMainPage
-                .clickOnComposeButton()
-                .filSentToFilled(currentUser)
-                .filSubjectFiled(mailSubjectText)
-                .filMailBodyFiled(mailBodyText)
-                .clickOnSendButton();
+                gmailMainPage
+                        .clickOnComposeButton()
+                        .filSentToFilled(currentUser)
+                        .filSubjectFiled(mailSubjectText)
+                        .filMailBodyFiled(mailBodyText)
+                        .clickOnSendButton();
 
         Assert.assertEquals(gmailMainPage.openSentPage().mailCounts(), mailsCountBeforeSendingMail + 1, "Quantity isn't changed after sending mail");
 
