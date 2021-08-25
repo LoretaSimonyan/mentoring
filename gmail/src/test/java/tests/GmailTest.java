@@ -1,9 +1,15 @@
 package tests;
 
+import io.qameta.allure.Description;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
 import model.User;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import pages.*;
 import utils.DriverFactory;
@@ -24,6 +30,8 @@ public class GmailTest {
     int sentMailsBeforeSendinNewMail;
 
     @BeforeMethod
+    @Severity(SeverityLevel.BLOCKER)
+    @Description("verifying gmail mail page title after login ")
     public void login() {
         driver = DriverFactory.getDriver();
         driver.get(propertiesReader.getBaseURL());
@@ -39,7 +47,9 @@ public class GmailTest {
         Assert.assertTrue(gmailMainPage.isInGmailPage(), "It's not Gmail main page");
     }
 
-    @Test(priority = 0,groups = {"Regression"})
+    @Test(priority = 0)
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("verifying that email sent")
     public void sentEmailTest() {
         SentPage sentPage = gmailMainPage.openSentMails();
         sentMailsBeforeSendinNewMail = sentPage.getSentMailsCount();
@@ -68,7 +78,9 @@ public class GmailTest {
         Assert.assertEquals(sentMailsBeforeSendinNewMail + 1, sentMailsAfterSendingNewMail, "Sent mail isn't in Sent folder");
     }
 
-    @Test(priority = 1,groups = {"Regression"})
+    @Test(priority = 1)
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("verifying that email appeared after sending it to yourself")
     public void receiveAndCheckEmail() {
         SentPage sentPage = gmailMainPage.openSentMails();
         int mailsCountBeforeSendingMail = sentPage.getSentMailsCount();
@@ -91,7 +103,9 @@ public class GmailTest {
 
     }
 
-    @Test(priority = 1, groups = {"Regression"})
+    @Test(priority = 1)
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("verifying that all sent emails are deleted")
     public void deleteAllSentEmails(){
         SentPage sentPage = gmailMainPage.openSentMails();
         Assert.assertNotEquals(sentPage.getSentMailsCount(),0, "Sent page is empty");
@@ -103,14 +117,18 @@ public class GmailTest {
         softAssert.assertAll();
     }
 
-    @Test(groups = {"Regression"})
+    @Test()
+    @Severity(SeverityLevel.NORMAL)
+    @Description("verifying status after sharing it")
     public void shareStatusTest(){
         HangoutsPage hangoutsPage = gmailMainPage.switchToHangoutsFrame();
         hangoutsPage.shareYourStatus(statusText);
         Assert.assertEquals(gmailMainPage.getSharedStatus(),statusText, "Status isn't set");
     }
 
-    @Test(groups = {"Regression"})
+    @Test()
+    @Severity(SeverityLevel.NORMAL)
+    @Description("verifying that user can sign out from hangouts")
     public void signOutFromHangoutsTest(){
         HangoutsPage hangoutsPage = gmailMainPage.switchToHangoutsFrame();
         hangoutsPage.signOutOfHangouts();
@@ -118,7 +136,9 @@ public class GmailTest {
         gmailMainPage.signInHangouts();
     }
 
-    @Test(groups = {"Regression"})
+    @Test()
+    @Severity(SeverityLevel.MINOR)
+    @Description("versifying that text appeared after hovering to delete button")
     public void deleteButtonTextInCreatingMailPageTest(){
         MailCreatingPage mailCreatingPage = gmailMainPage.clickOnComposeButton();
         mailCreatingPage.moveToDeleteButton();

@@ -1,17 +1,15 @@
 package org.mobile.testing.pages;
 
 import io.appium.java_client.MobileElement;
-import io.appium.java_client.pagefactory.AndroidBy;
-import org.openqa.selenium.interactions.Actions;
+import io.appium.java_client.pagefactory.AndroidFindBy;
 import org.openqa.selenium.support.FindBy;
 
-import javax.swing.*;
 import java.util.List;
 
 public class SignInPage extends BasePage{
-    Actions action;
 
-    @FindBy(id = "com.epam.connect.android:id/tvLoginButton")
+
+    @AndroidFindBy(id = "com.epam.connect.android:id/tvLoginButton")
     private MobileElement signInButton;
 
     @FindBy(id = "com.epam.connect.android:id/etLoginField")
@@ -38,10 +36,10 @@ public class SignInPage extends BasePage{
     }
 
     public boolean validateErrorMessage(){
+
         if (errorMessage.size() > 0){
             return true;
         }
         return false;
     }
-
 }
